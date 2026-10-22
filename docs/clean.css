@@ -1,0 +1,36 @@
+/* Spacious 800 x 480 layout. Keep the primary content legible from a distance. */
+#screen{padding:16px 24px;grid-template-rows:78px 82px 208px 58px 22px;box-shadow:none}
+header{align-items:center;border-bottom:2px solid #000;padding-bottom:10px}
+.eyebrow,.clock-wrap span{display:none}
+#date{font-size:28px;line-height:1.3;max-width:400px}
+#clock{font-size:68px;font-weight:700;letter-spacing:-3px}
+.focus{gap:15px;border:0}
+.focus-label{font-size:17px;padding:5px 0;border:0}
+h1{font-size:32px;margin-bottom:5px}
+.focus-copy p{font-size:18px}
+.remaining{min-width:66px;font-size:15px}
+.remaining b{font-size:36px;line-height:1.05}
+.columns{padding:9px 0 4px;gap:26px}
+.agenda{padding-left:25px}
+.section-heading{height:28px;margin-bottom:9px}
+.section-heading h2{font-size:24px}
+.section-heading span{font-size:15px}
+.event{height:46px;min-height:0;gap:12px;padding:5px 0;border:0}
+.event-time{font-size:22px;min-width:59px;align-self:auto;padding:0}
+.event-title{font-size:24px}
+.event-meta{display:none}
+.task{height:37px;min-height:0;gap:12px;padding:4px 0;border:0}
+.checkbox{width:17px;height:17px;border-width:2px}
+.task-title{font-size:24px}
+.due{font-size:13px;border:0;padding:0;font-weight:700}
+.empty{font-size:23px;line-height:1.5;margin:18px 0}
+.all-day{font-size:17px;margin-bottom:4px}
+.day-track{border:0;padding-top:5px}
+.track-caption{font-size:15px;margin-bottom:8px}
+.track-caption b{font-weight:400}
+.timeline{height:17px}
+.timeline .elapsed{top:auto;bottom:0;height:3px;background:#000}
+.ticks{font-size:13px}
+footer{font-size:12px;align-items:end;border:0}
+#taskPages{font-size:13px;margin-top:4px}
+body.demo .focus-label{background:#fff;color:#000;border-bottom:2px solid #000}

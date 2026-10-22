@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
+<title>היום שלי — Inkday</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="clean.css">
+</head>
+<body>
+<nav id="tools"><strong>‏Inkday · היום שלי</strong><span><button id="refreshButton">רענון</button><button id="demoButton">תצוגת הדגמה</button><button id="settingsButton">חיבור חשבונות</button></span></nav>
+<main id="screen" aria-label="לוח היום שלי">
+ <header><div><div class="eyebrow">היום שלי</div><div id="date">טוען תאריך…</div></div><div class="clock-wrap"><time id="clock" dir="ltr">--:--</time><span>שעון ישראל</span></div></header>
+ <section class="focus"><div class="focus-label" id="focusLabel">עכשיו</div><div class="focus-copy"><h1 id="focusTitle">נחבר את היום שלך</h1><p id="focusSubtitle">משימות, יומן וקצת מקום לנשום.</p></div><div id="remaining" class="remaining"></div></section>
+ <div class="columns">
+  <section class="agenda"><div class="section-heading"><h2>בהמשך היום</h2><span id="eventCount"></span></div><div id="allDay"></div><div id="events" class="event-list"><p class="empty">היומן יופיע אחרי החיבור</p></div></section>
+  <section class="inbox"><div class="section-heading"><h2>משימות</h2><span id="taskCount"></span></div><div id="tasks"><p class="empty">המשימות שלך יופיעו כאן</p></div><div id="taskPages"></div></section>
+ </div>
+ <section class="day-track" aria-label="המיקום שלי ביום"><div class="track-caption"><b>היום במבט אחד</b><span id="dayProgress"></span></div><div id="timeline" class="timeline"></div><div class="ticks" dir="ltr"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div></section>
+ <footer><span id="status">ממתין לחיבור</span><span id="updated">לוז יומי + משימות נכנסות</span></footer>
+</main>
+<dialog id="setup"><form id="setupForm"><h2>חיבור למסך שלך</h2><p>האתר קורא נתונים מסקריפט פרטי בחשבון Google שלך. הוראות ההתקנה נמצאות בקובץ README שבחבילה.</p><label>כתובת הסקריפט <input id="endpoint" type="url" dir="ltr" placeholder="https://script.google.com/macros/s/…/exec" required></label><label>מפתח התצוגה <input id="displayKey" type="password" dir="ltr" autocomplete="off" required></label><p class="hint">אין להזין כאן מפתח Todoist. מפתח Todoist נשמר רק בהגדרות הסקריפט.</p><button type="submit">חיבור ויצירת כתובת למסך</button><button id="closeSetup" type="button">סגירה</button><p id="setupError" role="alert"></p><label id="linkLabel" hidden>הכתובת להדבקה ב־Seeedash<input id="displayUrl" dir="ltr" readonly></label></form></dialog>
+<script src="app.js"></script>
+</body></html>
