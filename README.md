@@ -24,7 +24,6 @@ A monochrome, Hebrew-first, 800 × 480 dashboard for Todoist Inbox and today's e
 1. Open <https://script.google.com/home/start> with the Google account that owns **לוז יומי**, and create a new project named **Inkday**.
 2. Replace `Code.gs` with `google-apps-script/Code.gs` from this package.
 3. In **Project Settings**, enable **Show appsscript.json manifest file in editor**. Replace that file with the included `google-apps-script/appsscript.json`. This explicitly requests calendar **read-only** access and permission to call Todoist over HTTPS.
-4. In the editor choose **Services → + → Google Calendar API → Add** to enable Calendar API for the default project. If using a standard Cloud project, also enable Google Calendar API in that linked project. In **Project Settings → Script properties**, add:
 
 | Property | Value |
 | --- | --- |
@@ -33,7 +32,7 @@ A monochrome, Hebrew-first, 800 × 480 dashboard for Todoist Inbox and today's e
 | `CALENDAR_ID` | Required. Set this privately to the selected **לוז יומי** calendar in `Code.gs`. |
 
 5. Select **createDisplayKey** from the function menu and click **Run**. This generates a random `DISPLAY_KEY` in Script properties. It is a read-only display access key, distinct from your Todoist token. Do not publish it.
-6. Run **checkConnection** and approve Google's requested access yourself. Successful execution logs only the date, event/task counts, and `errors: []`, never event or task titles. If `calendar` appears in errors, verify that you used the correct Google account. If necessary, enable Google Calendar API in the script's associated Cloud project. If `todoist` appears, check the token and Inbox ID.
+6. Run **checkConnection** and approve Google's requested access yourself. Successful execution logs only the date, event/task counts, and `errors: []`, never event or task titles. If `calendar` appears in errors, verify that you used the correct Google account. The bridge uses the built-in Calendar service; no advanced API needs enabling. If `todoist` appears, check the token and Inbox ID.
 7. Choose **Deploy → New deployment → Web app → Execute as: Me → Who has access: Anyone → Deploy**. The script checks `DISPLAY_KEY` before fetching anything. The script needs to run without a Google login prompt because Seeedash's screenshot service has no Google browser session.
 8. Copy the deployed URL ending in `/exec`.
 

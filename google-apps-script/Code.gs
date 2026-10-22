@@ -27,13 +27,9 @@ function dashboard_(){
 /** UTC conversion uses the offset at the target midnight, including Israel DST boundaries. */
 function midnight_(date){const naive=Date.parse(date+'T00:00:00Z');let instant=naive;for(let i=0;i<3;i++){const z=Utilities.formatDate(new Date(instant),INKDAY_TZ,'Z'),sign=z[0]==='-'?-1:1,offset=sign*(Number(z.slice(1,3))*60+Number(z.slice(3,5)))*60000;instant=naive-offset;}return new Date(instant);}
 function events_(id,date){
- const next=new Date(date+'T12:00:00Z');next.setUTCDate(next.getUTCDate()+1);const nextDate=next.toISOString().slice(0,10);
- let token='',items=[];
- do{const q={timeMin:midnight_(date).toISOString(),timeMax:midnight_(nextDate).toISOString(),singleEvents:'true',orderBy:'startTime',maxResults:2500,timeZone:INKDAY_TZ};if(token)q.pageToken=token;
- const url='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(id)+'/events?'+Object.keys(q).map(k=>encodeURIComponent(k)+'='+encodeURIComponent(q[k])).join('&');
- const page=get_(url,ScriptApp.getOAuthToken());items=items.concat(page.items||[]);token=page.nextPageToken||'';
- }while(token);
- return items.filter(e=>e.status!=='cancelled'&&e.start&&e.end).map(e=>({title:e.summary||'ללא כותרת',start:e.start.dateTime||e.start.date,end:e.end.dateTime||e.end.date,allDay:!!e.start.date}));
+ const calendar=CalendarApp.getCalendarById(id);if(!calendar)throw Error('Calendar unavailable');
+ const next=new Date(date+'T12:00:00Z');next.setUTCDate(next.getUTCDate()+1);const endDate=next.toISOString().slice(0,10);
+ return calendar.getEvents(midnight_(date),midnight_(endDate)).map(e=>({title:e.getTitle()||'ללא כותרת',start:e.getStartTime().toISOString(),end:e.getEndTime().toISOString(),allDay:e.isAllDayEvent()}));
 }
 function tasks_(p){
  const token=p.getProperty('TODOIST_TOKEN');if(!token)throw Error('not configured');

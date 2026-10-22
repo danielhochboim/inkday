@@ -6,7 +6,7 @@ vm.createContext(ctx);vm.runInContext(source,ctx);
 assert.match(ctx.doGet({parameter:{callback:'evil();',key:property.DISPLAY_KEY}}),/invalid_request/);
 assert.match(ctx.doGet({parameter:{callback:'einkReceive',key:'wrong'}}),/unauthorized/);assert.equal(requests.length,0,'Unauthorized calls must never fetch private data');
 const tasks=ctx.tasks_({getProperty:k=>property[k]});assert.equal(tasks.length,2);assert.equal(tasks[0].content,'Second');assert.ok(requests[1].includes('cursor=next'));
-requests=[];const events=ctx.events_('calendar','2026-10-22');assert.equal(events.length,1);assert.ok(requests[0].includes('singleEvents=true'));
+requests=[];let calendarRange;ctx.CalendarApp={getCalendarById:id=>({getEvents:(start,end)=>{calendarRange=[start,end];return[{getTitle:()=> 'Event',getStartTime:()=>new Date('2026-10-22T09:00:00+03:00'),getEndTime:()=>new Date('2026-10-22T10:00:00+03:00'),isAllDayEvent:()=>false}];}})};const events=ctx.events_('calendar','2026-10-22');assert.equal(events.length,1);assert.equal(events[0].start,'2026-10-22T06:00:00.000Z');assert.equal(calendarRange[0].toISOString(),'2026-10-21T21:00:00.000Z');assert.equal(calendarRange[1].toISOString(),'2026-10-22T21:00:00.000Z');
 const spring=(ctx.midnight_('2026-03-28')-ctx.midnight_('2026-03-27'))/3600000;
 const autumn=(ctx.midnight_('2026-10-26')-ctx.midnight_('2026-10-25'))/3600000;
 assert.equal(spring,23,'Spring DST day');assert.equal(autumn,25,'Autumn DST day');
@@ -14,4 +14,4 @@ const escaped=ctx.output_({title:'</script>'},true);assert.ok(!escaped.includes(
 // Compile frontend without executing browser-specific code.
 new vm.Script(fs.readFileSync(__dirname+'/docs/app.js','utf8'));
 const manifest=JSON.parse(fs.readFileSync(__dirname+'/google-apps-script/appsscript.json','utf8'));assert.ok(manifest.oauthScopes.includes('https://www.googleapis.com/auth/calendar.readonly'));assert.equal(manifest.oauthScopes.length,2);
-console.log('PASS: auth gating, pagination, priority, cancelled events, Israel DST, JSONP escaping, read-only scopes, JS syntax.');
+console.log('PASS: auth gating, pagination, priority, calendar day boundaries, Israel DST, JSONP escaping, read-only scopes, JS syntax.');
