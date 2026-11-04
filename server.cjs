@@ -100,8 +100,8 @@ async function refresh() {
   const now = new Date(), date = dayKey(now);
   const result = {date, generatedAt: now.toISOString(), calendarName: process.env.CALENDAR_NAME || 'לוז יומי', tasks: [], events: [], errors: []};
   const [cal, todo] = await Promise.allSettled([events(date), tasks()]);
-  if (cal.status === 'fulfilled') result.events = cal.value; else { result.errors.push('calendar'); result.events = cached?.date === date ? cached.events : []; }
-  if (todo.status === 'fulfilled') result.tasks = todo.value; else { result.errors.push('todoist'); result.tasks = cached?.date === date ? cached.tasks : []; }
+  if (cal.status === 'fulfilled') result.events = cal.value; else { console.error('Calendar refresh failed:', cal.reason?.code || 'unknown'); result.errors.push('calendar'); result.events = cached?.date === date ? cached.events : []; }
+  if (todo.status === 'fulfilled') result.tasks = todo.value; else { console.error('Todoist refresh failed:', todo.reason?.message || 'unknown'); result.errors.push('todoist'); result.tasks = cached?.date === date ? cached.tasks : []; }
   cached = result; cachedAt = Date.now(); return result;
 }
 async function dashboard(force = false) {

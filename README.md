@@ -13,7 +13,7 @@ Hebrew-first 800×480 dashboard for Todoist Inbox and the Google Calendar named 
 
 ## Server files
 
-Production configuration is `/etc/inkday/inkday.env` with mode `0600`; it is never committed. Required values are documented in `.env.example`. The included `inkday.service` runs as `ubuntu`, starts after boot, binds only to `127.0.0.1`, and is published through Cloudflare Tunnel.
+Production configuration is `/etc/inkday/inkday.env` with mode `0600`; it is never committed. Required values are documented in `.env.example`, including `GOG_KEYRING_PASSWORD` so the non-interactive service can unlock the locally encrypted OAuth token. The included `inkday.service` runs as `ubuntu`, starts after boot, binds only to `127.0.0.1`, and is published through Cloudflare Tunnel.
 
 ## Authorization
 

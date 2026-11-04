@@ -9,6 +9,7 @@ User=ubuntu
 Group=ubuntu
 WorkingDirectory=/home/ubuntu/workspace/inkday
 EnvironmentFile=/etc/inkday/inkday.env
+Environment=GOG_ACCOUNT=daniel.hochboim@gmail.com
 ExecStart=/usr/bin/node /home/ubuntu/workspace/inkday/server.cjs
 Restart=on-failure
 RestartSec=5
@@ -17,6 +18,7 @@ PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=read-only
 ReadOnlyPaths=/home/ubuntu/workspace/inkday /home/ubuntu/.config/gogcli
+ReadWritePaths=/home/ubuntu/.config/gogcli/keyring
 
 [Install]
 WantedBy=multi-user.target
