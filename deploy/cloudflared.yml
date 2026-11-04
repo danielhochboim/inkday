@@ -1,0 +1,11 @@
+tunnel: 83ddcb7a-4330-4384-9c9d-6bf4988143e3
+credentials-file: /home/ubuntu/.cloudflared/83ddcb7a-4330-4384-9c9d-6bf4988143e3.json
+
+ingress:
+  - hostname: gotify.58319427.xyz
+    service: http://127.0.0.1:8080
+  - hostname: schedule.58319427.xyz
+    service: http://127.0.0.1:9120
+  - hostname: inkday.58319427.xyz
+    service: http://127.0.0.1:9180
+  - service: http_status:404

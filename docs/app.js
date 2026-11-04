@@ -5,7 +5,7 @@
  const query=new URLSearchParams(location.search), params=new URLSearchParams(location.hash.slice(1));
  const isDisplay=query.get('display')==='1';
  let demo=query.get('demo')==='1', data=null, lastError='', inFlight=false;
- let config={endpoint:params.get('endpoint')||'',key:params.get('key')||''};
+ let config={key:params.get('key')||''};
  if(isDisplay)document.body.classList.add('display');
  const text=(el,value)=>{value=String(value??'');el.textContent=/[\u0590-\u05ff]/.test(value)&&(/[a-zA-Z]/.test(value)||/\p{Extended_Pictographic}/u.test(value))?'\u200f'+value:value;};
  const node=(tag,cls,value)=>{const el=document.createElement(tag);el.className=cls||'';if(value!==undefined)text(el,value);return el;};
@@ -63,23 +63,22 @@
  }
  async function load(){
   if(demo){data=sample();lastError='';render();return;}
-  if(!config.endpoint||!config.key){data=null;render();text($('status'),'לא מחובר · פתח חיבור חשבונות');return;}
+  if(!config.key){data=null;render();text($('status'),'לא מחובר · פתח חיבור למסך');return;}
   if(inFlight)return;inFlight=true;
-  try{const result=await jsonp(config);if(result.error)throw Error(result.error==='unauthorized'?'מפתח התצוגה שגוי':'החיבור לא הושלם');if(!Array.isArray(result.tasks)||!Array.isArray(result.events)||!result.generatedAt||!result.date)throw Error('תגובה לא תקינה');
+  try{const result=await requestData(config);if(result.error)throw Error(result.error==='unauthorized'?'מפתח התצוגה שגוי':'החיבור לא הושלם');if(!Array.isArray(result.tasks)||!Array.isArray(result.events)||!result.generatedAt||!result.date)throw Error('תגובה לא תקינה');
    // Retain the last successful source on partial failures; never turn a fetch failure into an empty Inbox.
    const errors=result.errors||[];if(data&&data.date===result.date){if(errors.includes('todoist'))result.tasks=data.tasks;if(errors.includes('calendar'))result.events=data.events;}
    data=result;lastError='';
-  }catch(error){lastError=error.message||'אין חיבור';if(!data){text($('focusTitle'),'לא הצלחנו לעדכן');text($('focusSubtitle'),'בדוק את כתובת הסקריפט ואת מפתח התצוגה');text($('status'),lastError);}}
+  }catch(error){lastError=error.message||'אין חיבור';if(!data){text($('focusTitle'),'לא הצלחנו לעדכן');text($('focusSubtitle'),'בדוק את מפתח התצוגה ואת חיבור השרת');text($('status'),lastError);}}
   finally{inFlight=false;render();if(!data)text($('status'),lastError);}
  }
- function validEndpoint(value){const u=new URL(value);if(u.origin!=='https://script.google.com'||!/^\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(u.pathname)||u.search||u.hash)throw Error('יש להזין כתובת פריסה של Google Apps Script המסתיימת ב־/exec');return u.href;}
- function jsonp(cfg){return new Promise((resolve,reject)=>{let url;try{url=new URL(validEndpoint(cfg.endpoint));}catch(e){reject(e);return;}url.searchParams.set('key',cfg.key);url.searchParams.set('callback','einkReceive');url.searchParams.set('_',Date.now());const script=document.createElement('script');const cleanup=()=>{clearTimeout(timer);script.remove();delete window.einkReceive;};const timer=setTimeout(()=>{cleanup();reject(Error('החיבור ארך יותר מדי זמן'));},25000);window.einkReceive=result=>{cleanup();resolve(result);};script.onerror=()=>{cleanup();reject(Error('לא ניתן להגיע לסקריפט'));};script.src=url.href;script.referrerPolicy='no-referrer';document.head.append(script);});}
- function setup(){ $('endpoint').value=config.endpoint;$('displayKey').value=config.key;$('setup').showModal();}
+ async function requestData(cfg){const response=await fetch('/api/dashboard?refresh=1&_='+Date.now(),{cache:'no-store',headers:{Authorization:'Bearer '+cfg.key}});const result=await response.json().catch(()=>({error:'unavailable'}));if(!response.ok&&result.error!=='unauthorized')throw Error('לא ניתן להגיע לשרת');return result;}
+ function setup(){ $('displayKey').value=config.key;$('setup').showModal();}
  $('settingsButton').onclick=setup;$('closeSetup').onclick=()=>$('setup').close();$('refreshButton').onclick=load;
  $('demoButton').onclick=()=>{demo=!demo;data=null;load();};
- $('setupForm').onsubmit=async e=>{e.preventDefault();try{const endpoint=validEndpoint($('endpoint').value.trim()),key=$('displayKey').value.trim();if(key.length<24)throw Error('מפתח התצוגה צריך להכיל לפחות 24 תווים');config={endpoint,key};demo=false;data=null;const url=new URL(location.href);url.search='?display=1';url.hash=new URLSearchParams(config).toString();$('displayUrl').value=url.href;$('linkLabel').hidden=false;text($('setupError'),'הכתובת מוכנה. שמור אותה והדבק אותה ב־Seeedash.');await load();}catch(error){text($('setupError'),error.message);}};
+ $('setupForm').onsubmit=async e=>{e.preventDefault();try{const key=$('displayKey').value.trim();if(key.length<24)throw Error('מפתח התצוגה צריך להכיל לפחות 24 תווים');config={key};demo=false;data=null;const url=new URL(location.origin+'/');url.search='?display=1';url.hash=new URLSearchParams(config).toString();$('displayUrl').value=url.href;$('linkLabel').hidden=false;text($('setupError'),'הכתובת מוכנה. שמור אותה והדבק אותה ב־SenseCraft.');await load();}catch(error){text($('setupError'),error.message);}};
  function resize(){document.documentElement.style.setProperty('--scale',Math.min(1,(innerWidth-24)/800));}addEventListener('resize',resize);resize();
  render();load();setInterval(render,15000);setInterval(load,300000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)load();});
  // Public, deterministic helpers for boundary tests without exposing credentials.
- window.Inkday={dayKey,minute,validEndpoint};
+ window.Inkday={dayKey,minute};
 })();
